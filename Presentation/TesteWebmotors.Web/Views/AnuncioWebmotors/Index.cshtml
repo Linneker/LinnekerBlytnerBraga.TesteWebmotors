@@ -1,0 +1,106 @@
+﻿@model TesteWebmotors.Web.Models.AnuncioFiltroViewModel;
+
+@{
+    ViewData["Title"] = "Anuncios";
+    IEnumerable<SelectListItem> marcasIndex = ViewBag.MarcasIndex;
+}
+
+<div class="container">
+    <form asp-action="Index">
+
+        <div class="row">
+            <div class="col-6">
+                <label class="control-label">Marca</label>
+                <select asp-for="Filtro.Marca" asp-items="@marcasIndex" class="form-control" id="marcas_index" onchange="buscaModeloPelaMarca('marcas_index')"></select>
+            </div>
+            <div class="col-6">
+                <label class="control-label">Modelo</label>
+                <select asp-for="Filtro.Modelo" class="form-control" id="models" onchange="buscaVersaoPelaMarca()"></select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <label class="control-label">Versão</label>
+                <select asp-for="Filtro.Versao" class="form-control" id="versao"></select>
+            </div>
+            <div class="col-6">
+                <label asp-for="Filtro.Ano" class="control-label"></label>
+                <input asp-for="Filtro.Ano" class="form-control" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <label asp-for="Filtro.Quilometragem" class="control-label"></label>
+                <input asp-for="Filtro.Quilometragem" class="form-control" />
+            </div>
+            <div class="col-6">
+                <label asp-for="Filtro.Observacao" class="control-label"></label>
+                <input asp-for="Filtro.Observacao" class="form-control" />
+            </div>
+        </div>
+        <div class="row">
+                <input type="submit" value="Pesquisar" class="btn btn-primary" />
+        </div>
+    </form>
+</div>
+<br />
+<br />
+<p>
+    <a asp-action="Create" class="btn btn-primary">Cadastrar</a>
+</p>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>
+                Marca
+            </th>
+            <th>
+                Modelo
+            </th>
+            <th>
+                Versão
+            </th>
+            <th>
+                Ano
+            </th>
+            <th>
+                Quilometragem
+            </th>
+            <th>
+                Observações
+            </th>
+            <th>
+                @Html.Label("Ações")
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Anuncios)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Marca)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Modelo)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Versao)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Ano)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Quilometragem)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Observacao)
+                </td>
+                <td>
+                    @Html.ActionLink("Editar", "Edit", new {  id=item.Id },new{ Class="btn btn-primary" }) |
+                    @Html.ActionLink("Remover", "Delete", new { id=item.Id },new{ Class="btn btn-danger" })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

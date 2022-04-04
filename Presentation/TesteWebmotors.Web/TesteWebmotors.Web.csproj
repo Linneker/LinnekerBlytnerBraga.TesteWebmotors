@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>bbcd8b86-eaa0-4d51-bcef-6f1b6c668f01</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="6.0.3" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.15.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.2" />
+    <PackageReference Include="NLog" Version="4.7.15" />
+    <PackageReference Include="NLog.Extensions.Logging" Version="1.7.4" />
+    <PackageReference Include="NLog.Web.AspNetCore" Version="4.14.0" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\TesteWebmotors.Domain\TesteWebmotors.Dominio.csproj" />
+    <ProjectReference Include="..\..\Core\TesteWebmotors.Servico\TesteWebmotors.Servico.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\TesteWebmotors.Infrastructure\TesteWebmotors.Infraestrutura.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\TesteWebmotors.InjecaoDependencia\TesteWebmotors.InjecaoDependencia.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,63 @@
+﻿@using Newtonsoft.Json
+@using TesteWebmotors.Dominio.DTO.ServicosExternos
+@model TesteWebmotors.Web.Models.AnuncioWebmotorsViewModel
+
+@{
+    ViewData["Title"] = "Create";
+    IEnumerable<SelectListItem> marcas = ViewBag.Marcas;
+ }
+
+<h1>Create</h1>
+<h4>AnuncioWebmotors</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Marca" class="control-label"></label>
+                <select asp-for="Marca" asp-items="@marcas" class="form-control" id="marcas" onchange="buscaModeloPelaMarca('marcas')"></select>
+                <span asp-validation-for="Marca" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Modelo" class="control-label"></label>
+                <select asp-for="Modelo" class="form-control" id="models" onchange="buscaVersaoPelaMarca()"></select>
+                <span asp-validation-for="Modelo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Versao" class="control-label"></label>
+                <select asp-for="Versao" class="form-control" id="versao"></select>
+                <span asp-validation-for="Versao" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Ano" class="control-label"></label>
+                <input asp-for="Ano" class="form-control" />
+                <span asp-validation-for="Ano" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Quilometragem" class="control-label"></label>
+                <input asp-for="Quilometragem" class="form-control" />
+                <span asp-validation-for="Quilometragem" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Observacao" class="control-label"></label>
+                <input asp-for="Observacao" class="form-control" />
+                <span asp-validation-for="Observacao" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Cadastrar" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+<script>
+    buscaModeloPelaMarca('marcas');
+</script>
+}

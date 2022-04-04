@@ -1,0 +1,79 @@
+﻿@using Newtonsoft.Json
+@model TesteWebmotors.Web.Models.AnuncioWebmotorsViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+    List<SelectListItem> marcasEdit = ViewBag.MarcasEditar;
+    IEnumerable<SelectListItem> modelos= ViewBag.ModelosEditar;
+    IEnumerable<SelectListItem> versoes= ViewBag.VersoesEditar;
+
+}
+
+<h4>AnuncioWebmotorsViewModel</h4>
+<hr />
+
+<h1>Edit</h1>
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group invisible">
+                <label asp-for="Id" class="control-label"></label>
+                <input asp-for="Id" class="form-control" />
+                <span asp-validation-for="Id" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Marca" class="control-label"></label>
+
+                <select asp-for="Marca" class="form-control" id="marcas_edit" onchange="buscaModeloPelaMarca('marcas_edit')">
+                    @{
+                        foreach(var item in marcasEdit)
+                        {
+                            <option value="@item.Value" selected="@item.Selected">@item.Text</option>        
+                        }
+                    }
+                </select>
+                <span asp-validation-for="Marca" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Modelo" class="control-label"></label>
+                <select asp-for="Modelo" asp-items="@modelos" class="form-control" id="models" onchange="buscaVersaoPelaMarca()"></select>
+                <span asp-validation-for="Modelo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Versao" class="control-label"></label>
+                <select asp-for="Versao" asp-items="@versoes" class="form-control" id="versao"></select>
+                <span asp-validation-for="Versao" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Ano" class="control-label"></label>
+                <input asp-for="Ano" class="form-control" />
+                <span asp-validation-for="Ano" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Quilometragem" class="control-label"></label>
+                <input asp-for="Quilometragem" class="form-control" />
+                <span asp-validation-for="Quilometragem" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Observacao" class="control-label"></label>
+                <input asp-for="Observacao" class="form-control" />
+                <span asp-validation-for="Observacao" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+}
+}
