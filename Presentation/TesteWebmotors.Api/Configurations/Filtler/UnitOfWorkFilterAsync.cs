@@ -12,12 +12,8 @@ namespace TesteWebmotors.Api.Configurations.Filtler
         {
             try
             {
-                IUnitOfWork baseApplication = (IUnitOfWork)context.HttpContext.RequestServices.GetService(typeof(IUnitOfWork));
+                IUnitOfWorkServico baseApplication = (IUnitOfWorkServico)context.HttpContext.RequestServices.GetService(typeof(IUnitOfWorkServico));
                 bool salvo = await baseApplication.CommitAsync();
-                if (!salvo)
-                    throw (new Exception("Problema ao salvar elemento"));
-                else
-                    await next();
             }
             catch
             {

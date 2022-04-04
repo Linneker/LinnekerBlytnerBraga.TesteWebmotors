@@ -11,6 +11,8 @@ using TesteWebmotors.Api.Configurations;
 using TesteWebmotors.Infraestrutura.Config;
 using TesteWebmotors.InjecaoDependencia;
 using TesteWebmotors.Dominio.Entidade;
+using TesteWebmotors.Servico.Validadores;
+using TesteWebmotors.Api.Configurations.Filtler;
 
 namespace TesteWebmotors.Api
 {
@@ -46,17 +48,11 @@ namespace TesteWebmotors.Api
 
             // Add services to the container.
             services.RegistrarDependencia();
-            
+
             services.AddControllers()
-            .ConfigureApiBehaviorOptions(options => {
-                options.InvalidModelStateResponseFactory = context => {
-            
-                    return new ObjectResult(new ErrorResponse("entity_validation", "The following inconsistencies were found in the sent entity",
-                        "Model", new Exception("Model")))
-                    {
-                        StatusCode = (int)HttpStatusCode.UnprocessableEntity
-                    };
-                };
+                .AddFluentValidation(_ => {
+                _.RegisterValidatorsFromAssemblyContaining<AnuncioWebmotorsValidador>();
+                _.DisableDataAnnotationsValidation = true;
             }).AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
@@ -73,6 +69,9 @@ namespace TesteWebmotors.Api
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
+
+
+            app.UseMiddleware(typeof(ErrorHandlingMiddleware));
 
             logger.CreateLogger($"log_testewebmotors_${DateTime.Now.Year}{DateTime.Now.Month}{DateTime.Now.Day}");
             app.UseResponseCompression();

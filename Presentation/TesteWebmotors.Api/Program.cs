@@ -12,7 +12,6 @@ staurtup.ConfigureServices(builder.Services);
 var app = builder.Build();
 
 staurtup.Configure(app, app.Environment, Startup.loggerFactory);
-// Configure the HTTP request pipeline.
 
 app.Run();
 logger.Debug("Fim");

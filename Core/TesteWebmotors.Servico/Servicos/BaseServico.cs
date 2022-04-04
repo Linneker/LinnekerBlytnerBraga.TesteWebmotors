@@ -9,7 +9,7 @@ using TesteWebmotors.Dominio.Interface.Servico;
 
 namespace TesteWebmotors.Servico.Servicos
 {
-    public class BaseServico<Entidade> : IBaseServico<Entidade> where Entidade : EntidadeBase
+    public class BaseServico<Entidade> : IBaseServico<Entidade> where Entidade : EntidadeBase 
     {
         private readonly IBaseRepositorio<Entidade> _repositorioBase;
 
@@ -17,10 +17,6 @@ namespace TesteWebmotors.Servico.Servicos
         {
             _repositorioBase = repositorioBase;
         }
-
-        public virtual void Adicionar(Entidade entidade)=> _repositorioBase.Adicionar(entidade);
-
-        public virtual Task AdicionarAssincrono(Entidade entidade) => _repositorioBase.AdicionarAssincrono(entidade);
 
         public virtual async Task Atualizar(Entidade entidade) => _repositorioBase.Atualizar(entidade);
 

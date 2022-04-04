@@ -11,7 +11,6 @@ namespace TesteWebmotors.Api.Controllers
             {
                 IUnitOfWorkServico baseApplication = (IUnitOfWorkServico)context.HttpContext.RequestServices.GetService(typeof(IUnitOfWorkServico));
                 bool salvo = baseApplication.Commit();
-               
             }
             catch
             {

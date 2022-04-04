@@ -1,48 +1,61 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
 using System.Net;
 using TesteWebmotors.Dominio.Ajudantes;
 
 namespace TesteWebmotors.Api.Configurations.Filtler
 {
-    public class ErrorHandlingMiddleware : ExceptionFilterAttribute, IExceptionFilter
+    public class ErrorHandlingMiddleware 
     {
 
         private readonly ILogger<ErrorHandlingMiddleware> _logger;
+        private readonly RequestDelegate _next;
 
-        public ErrorHandlingMiddleware(ILogger<ErrorHandlingMiddleware> logger)
+        public ErrorHandlingMiddleware(ILogger<ErrorHandlingMiddleware> logger,
+            RequestDelegate next)
         {
             _logger = logger;
+            _next = next;
+        }
+        
+        public async Task Invoke(HttpContext context)
+        {
+            try
+            {
+                await _next(context);
+            }
+            catch (Exception ex)
+            {
+                await Excessao(context,ex);
+            }
         }
 
-        public override void OnException(ExceptionContext context)
+        public Task Excessao(HttpContext context, Exception exception)
         {
-            var exception = context.Exception;
-            var errorResponse = ExceptionToErrorResponse(exception);
+            var code = PegaStatusCode(exception);
 
-            var result = new ObjectResult(errorResponse)
-            {
-                StatusCode = (int)GetStatusCode(exception)
-            };
-            _logger.LogError("Unhandled exception occurred while executing request: {ex}", context.Exception);
-            context.Result = result;
+            var result = JsonConvert.SerializeObject(new { error = exception.Message });
+            context.Response.ContentType = "application/json";
+            context.Response.StatusCode = (int)code;
+            return context.Response.WriteAsync(result); 
         }
 
         public static ErrorResponse ExceptionToErrorResponse(Exception ex)
         {
-            return ex is not TesteWebmotorsException eProcessosExceptions ? new ErrorResponse { ErrorCode = "server_error", Message = ex.Message } :
+            return ex is not TesteWebmotorsException webmotorsExceptions ? new ErrorResponse { ErrorCode = "server_error", Message = ex.Message } :
                 new ErrorResponse
                 {
-                    ErrorCode = eProcessosExceptions.ErrorCode,
-                    Param = eProcessosExceptions.Param,
-                    Message = eProcessosExceptions.Message,
-                    InnerException = eProcessosExceptions.InnerException,
+                    ErrorCode = webmotorsExceptions.ErrorCode,
+                    Param = webmotorsExceptions.Param,
+                    Message = webmotorsExceptions.Message,
+                    InnerException = webmotorsExceptions.InnerException,
                 };
         }
 
-        private static HttpStatusCode GetStatusCode(Exception exception)
+        public static HttpStatusCode PegaStatusCode(Exception exception)
         {
             return exception switch
             {

@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TesteWebmotors.Dominio.Ajudantes;
+using TesteWebmotors.Dominio.DTO.Api;
+using TesteWebmotors.Dominio.DTO.ServicosExternos;
 using TesteWebmotors.Dominio.Entidade;
 using TesteWebmotors.Dominio.Interface.Repositorio;
 using TesteWebmotors.Dominio.Interface.Servico;
@@ -18,37 +20,49 @@ namespace TesteWebmotors.Servico.Servicos
         private readonly MakeRequisicao _makeRequisicao;
         private readonly ModelRequisicao _modelRequisicao;
         private readonly VersionRequisicao _versionRequisicao;
+        private readonly VehiclesRequisicao _vehiclesRequisição;
 
         public AnuncioWebmotorsServico(IAnuncioWebmotorsRepositorio anuncioWebmotorsRepositorio,
-            MakeRequisicao makeRequisicao, ModelRequisicao modelRequisicao, VersionRequisicao versionRequisicao) : base(anuncioWebmotorsRepositorio)
+            MakeRequisicao makeRequisicao, ModelRequisicao modelRequisicao
+            , VersionRequisicao versionRequisicao, VehiclesRequisicao vehiclesRequisição) : base(anuncioWebmotorsRepositorio)
         {
             _anuncioWebmotorsRepositorio = anuncioWebmotorsRepositorio;
             _makeRequisicao = makeRequisicao;
             _modelRequisicao = modelRequisicao;
             _versionRequisicao = versionRequisicao;
+            _vehiclesRequisição = vehiclesRequisição;
         }
 
-        public override async Task AdicionarAssincrono(AnuncioWebmotors entidade)
+        public async Task AdicionarAssincrono(AnuncioWebmotorsDTO entidade)
         {
-            await ValidaDados(entidade);
-            await _anuncioWebmotorsRepositorio.AdicionarAssincrono(entidade);
+            AnuncioWebmotors anuncio = ParseAnuncioWebmotorsDTOToAnuncioWebmotors(entidade);
+            await ValidaDados(anuncio);
+            await _anuncioWebmotorsRepositorio.AdicionarAssincrono(anuncio);
         }
 
         public override async Task Atualizar(AnuncioWebmotors entidade)
         {
-             await ValidaDados(entidade);
+            await ValidaDados(entidade);
             _anuncioWebmotorsRepositorio.Atualizar(entidade);
         }
-       
-       public Task<List<AnuncioWebmotors>> Filtrar(FiltroAnuncioWebmotors anuncioWebmotors) => _anuncioWebmotorsRepositorio.Filtrar(anuncioWebmotors);
 
-        public Task<AnuncioWebmotors> ObterPorMarca(string marca)=> _anuncioWebmotorsRepositorio.ObterPorMarca(marca);
+        public Task<List<AnuncioWebmotors>> Filtrar(FiltroAnuncioWebmotors anuncioWebmotors) => _anuncioWebmotorsRepositorio.Filtrar(anuncioWebmotors);
+
+        public Task<AnuncioWebmotors> ObterPorMarca(string marca) => _anuncioWebmotorsRepositorio.ObterPorMarca(marca);
 
         public Task<List<AnuncioWebmotors>> Paginador(int pagina, int totalPorPagina)
         {
             return _anuncioWebmotorsRepositorio.Paginador(pagina, totalPorPagina);
         }
-    
+
+        private AnuncioWebmotors ParseAnuncioWebmotorsDTOToAnuncioWebmotors(AnuncioWebmotorsDTO entidade)
+        {
+            AnuncioWebmotors anuncio = new AnuncioWebmotors(entidade.Marca, entidade.Modelo, entidade.Versao, entidade.Ano,
+                entidade.Quilometragem, entidade.Observacao);
+            return anuncio;
+        }
+
+
         private async Task ValidaDados(AnuncioWebmotors entidade)
         {
             int idMake = 0;
@@ -77,6 +91,23 @@ namespace TesteWebmotors.Servico.Servicos
             {
                 throw new Exception("Versão não encontrada!");
             }
+            List<VehiclesDTO> vehiclesDTOs = new List<VehiclesDTO>();
+            bool anoQuilometragemVeiculoEncontrado = false;
+            int i = 1;
+            do
+            {
+                vehiclesDTOs = await _vehiclesRequisição.ObterVehiclesPorPage(URL_SERVICO, i);
+                anoQuilometragemVeiculoEncontrado = (vehiclesDTOs.Where(t => t.KM == entidade.Quilometragem
+                    && t.YearModel == entidade.Ano
+                    && t.Make.Equals(entidade.Marca) && t.Model.Equals(entidade.Modelo) && t.Version.Equals(entidade.Versao))
+                    .Any());
+                if (anoQuilometragemVeiculoEncontrado) break;
+
+                i++;
+            } while (vehiclesDTOs.Count > 0);
+
+            if(!anoQuilometragemVeiculoEncontrado)
+                throw new Exception("Não possuimos esse veiculo nesse ano com essa quilometragem!");
 
         }
 

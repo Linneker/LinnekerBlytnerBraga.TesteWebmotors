@@ -20,6 +20,7 @@ namespace TesteWebmotors.InjecaoDependencia
             serviceCollection.AddScoped<MakeRequisicao>();
             serviceCollection.AddScoped<ModelRequisicao>();
             serviceCollection.AddScoped<VersionRequisicao>();
+            serviceCollection.AddScoped<VehiclesRequisicao>();
 
             serviceCollection.InstalarRepositorio();
             serviceCollection.InstalarServico();

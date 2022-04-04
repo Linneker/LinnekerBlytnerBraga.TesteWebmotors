@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace TesteWebmotors.Dominio.DTO.ServicosExternos
 {
-    internal class Vehicles : BaseService
+    public class VehiclesDTO : BaseService
     {
         
-        public Vehicles(int id, string make, string model, string version,
+        public VehiclesDTO(int id, string make, string model, string version,
             string image, int kM, string price, int yearModel, int yearFab, 
             string color) : base(id)
         {

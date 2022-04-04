@@ -4,10 +4,8 @@ using TesteWebmotors.Dominio.Entidade;
 
 namespace TesteWebmotors.Dominio.Interface.Servico
 {
-    public interface IBaseServico<Entity> where Entity : EntidadeBase 
+    public interface IBaseServico<Entity> where Entity : EntidadeBase
     {
-        void Adicionar(Entity entity);
-        Task AdicionarAssincrono(Entity entity);
         Task Atualizar(Entity entity);
         void Deletar(Entity entity);
         Task<Entity> ObterPorId(int id);

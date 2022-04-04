@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Linq;
 using TesteWebmotors.Dominio.Ajudantes;
+using TesteWebmotors.Dominio.DTO.Api;
 using TesteWebmotors.Dominio.DTO.ServicosExternos;
 using TesteWebmotors.Dominio.Entidade;
 using TesteWebmotors.Dominio.Interface.Servico;
@@ -56,7 +57,6 @@ namespace TesteWebmotors.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [UnitOfWorkFilter]
         public async Task<ActionResult> Index(AnuncioFiltroViewModel filtroAnuncioWebmotors)
         {
 
@@ -107,20 +107,20 @@ namespace TesteWebmotors.Web.Controllers
         // POST: AnuncioWebmotorsController1/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [UnitOfWorkFilterAsync]
+        [UnitOfWorkFilter]
         public async Task<ActionResult> Create(AnuncioWebmotorsViewModel collection)
         {
             try
             {
                 var model = await _modelRequisicao.ObterModelsPorMakeId(URL_SERVICO, int.Parse(collection.Marca));
-                AnuncioWebmotors awm = new AnuncioWebmotors(_makes.Where(t => t.Id.Equals(int.Parse(collection.Marca))).Select(t => t.Name).FirstOrDefault(), model.Where(t => t.Id.Equals(int.Parse(collection.Modelo))).Select(t => t.Name).FirstOrDefault(), collection.Versao, collection.Ano, collection.Quilometragem, collection.Observacao);
+                AnuncioWebmotorsDTO awm = new AnuncioWebmotorsDTO(_makes.Where(t => t.Id.Equals(int.Parse(collection.Marca))).Select(t => t.Name).FirstOrDefault(), model.Where(t => t.Id.Equals(int.Parse(collection.Modelo))).Select(t => t.Name).FirstOrDefault(), collection.Versao, collection.Ano, collection.Quilometragem, collection.Observacao);
 
                 await _service.AdicionarAssincrono(awm);
                 return RedirectToAction(nameof(Index));
             }
             catch
             {
-                return View();
+                throw;
             }
         }
 

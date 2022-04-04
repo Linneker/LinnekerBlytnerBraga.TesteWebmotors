@@ -19,10 +19,6 @@ namespace TesteWebmotors.Api.Controllers
             _baseService = service;
         }
 
-        [HttpPost("Create")]
-        [UnitOfWorkFilter]
-        public void AdicionarAsync(Entidade entity) => _baseService.Adicionar(entity);
-
         [HttpGet("Get/{id}")]
         public Task<Entidade> ObterPorId(int id) => _baseService.ObterPorId(id);
 
