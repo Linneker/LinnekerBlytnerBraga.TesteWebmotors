@@ -1,0 +1,2 @@
+Existem varia coisas que poderiam ser inseridos e feitas de formas diferêntes como a URL não presente no aap.setings. 
+Por se tratar de um teste mais simples, optei por algumas abordagens mais simples de implementação.
